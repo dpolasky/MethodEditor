@@ -1,0 +1,24 @@
+#Param Key,Default value,Parameter NAME,Parameter type,Param lower,Param upper,Param list,Parameter Description,Param Codename
+msms_bool,TRUE,,string,,,True;False,,msms_mode
+cal_file,<your_cal_file>,,anystring,,,,,calibrationfile
+optic_mode,sensitivity,,string,,,sensitivity;resolution;high_resolution,,g2opticmode
+tune_file,<your_ipr_file>,,anystring,,,,,mstunefile
+output_dir,C:/MethodEditor/Outputs,,anystring,,,,,outputdirectory
+save_to_masslynx,FALSE,,string,,,True;False,,saveToMassLynxDir
+masslynx_dir,C:/MassLynx/Dan.Pro/ACQUDB,,string,,,,,masslynxdir
+functions_per_file,1,,int,1,inf,,,functions_per_file 
+save_dt,FALSE,,string,,,True;False,,save_DT_function
+delay_bool,FALSE,,string,,,True;False,,use_delay 
+delay_time_init,0,,float,0,inf,,,init_delay_func_time 
+delay_time_btwn,0,,float,0,inf,,,delay_between_funcs 
+date,<date>,,anystring,,,,,date
+mz,4000,,float,10,inf,,,mz
+sample_name,<sample>,,anystring,,,,,protein
+cv_step,5,,float,0,inf,,,step
+cv_start,10,,float,4,200,,,startcollisionvoltage
+cv_end,200,,float,4,200,,,endcollisionvoltage
+ms_start,100,,float,1,inf,,,msstart
+ms_end,8000,,float,1,inf,,,msend
+collect_time,0.5,,float,0.005,inf,,,collectiontime(mins)
+scan_time,1,,float,0.3,30,,,scantime(secs)
+base_file_path,C:/MethodEditor/G2_base_file,,anystring,0,inf,,,basefile
