@@ -31,17 +31,16 @@ class Function(object):
     stop_time: float
 
 
-def main_method_prep(param_obj_list, combine_all):
+def main_method_prep(param_obj_list):
     """
     Generate MS method files and sample list for a list of parameter containers. Allows
     all to be combined into a single method if desired (e.g. for droplet analysis) or
     to generate individual method files.
     :param param_obj_list: list of parameter containers for all analyses requested
     :type param_obj_list: list[Parameters.MethodParams]
-    :param combine_all: (bool) if true, ALL requested methods will be combined into a single output method/raw file
     :return: void
     """
-    if combine_all:
+    if param_obj_list[0].combine_all_bool:
         # Combined mode: combine ALL analyses into a single method/raw file
         funcs = make_funcs(param_obj_list)
         filename = make_method_file(funcs, param_obj_list[0])
@@ -180,7 +179,7 @@ def make_method_file(function_list, param_obj):
     exp_full_path = os.path.join(output_dir, exp_filename)
 
     # Write exp file from the provided base file
-    header, func_lines, footer = get_basefile_lines(param_obj.base_file_path)
+    header, func_lines, footer = get_basefile_lines(param_obj)
 
     # Header section
     output_lines = []
@@ -224,9 +223,9 @@ def get_func_types(list_of_funcs):
     output_string = 'FunctionTypes'
     for func in list_of_funcs:
         if func.msms_mode:
-            output_string += ', Tof MSMS'
+            output_string += ',Tof MSMS'
         else:
-            output_string += ', Tof MS'
+            output_string += ',Tof MS'
     output_string += '\n'
     return output_string
 
@@ -259,10 +258,18 @@ def gen_function_lines(func, index, basefunc_lines, optic_mode):
             newline = 'FunctionScanTime(sec),{}\n'.format(func.scantime)
         elif line.lower().startswith('tofsetmass'):
             newline = 'TOFSetMass,{}\n'.format(func.select_mz)
-        elif line.lower().startswith('tofcollisionenergy'):
-            newline = 'TOFCollisionEnergy,{}\n'.format(func.cv)   # MSMS mode
-        elif line.lower().startswith('fixedcollisionenergy'):
-            newline = 'FixedCollisionEnergy,{}\n'.format(func.cv) # MS mode
+        elif line.lower().startswith('tofcollisionenergy') or line.lower().startswith('fixedcollisionenergy'):
+            # NOTE: CV param is different in MS vs MSMS mode. Correct ONLY the appropriate line and leave the other alone
+            if func.msms_mode:
+                if line.lower().startswith('tofcollisionenergy'):
+                    newline = 'TOFCollisionEnergy,{}\n'.format(func.cv)
+                else:
+                    newline = line
+            else:
+                if line.lower().startswith('fixedcollisionenergy') and not line.lower().startswith('fixedcollisionenergy2'):
+                    newline = 'FixedCollisionEnergy,{}\n'.format(func.cv)
+                else:
+                    newline = line
         else:
             newline = line
 
@@ -270,16 +277,17 @@ def gen_function_lines(func, index, basefunc_lines, optic_mode):
     return output_lines
 
 
-def get_basefile_lines(basefile_path):
+def get_basefile_lines(param_obj):
     """
     Return lists of basefile lines for header, function, and footer
-    :param basefile_path: full path to basefile to read
+    :param param_obj: parameter container
+    :type param_obj: Parameters.MethodParams
     :return: list of header, function, footer lines
     """
     header_lines, function_lines, footer_lines = [], ['\n'], []
     header = True
     footer = False
-    with open(basefile_path, 'r') as basefile:
+    with open(param_obj.base_file_path, 'r') as basefile:
         for line in list(basefile):
             # check where we are in the file
             if line.lower().startswith('function 1'):
@@ -293,8 +301,13 @@ def get_basefile_lines(basefile_path):
             else:
                 function_lines.append(line)
 
-            if line.lower().startswith('scanssum'):
-                footer = True
+            # check for end of function lines
+            if param_obj.msms_bool:
+                if line.lower().startswith('scanssum'):
+                    footer = True
+            else:
+                if line.lower().startswith('fastddamsmsscantime'):
+                    footer = True
 
             if line.lower().startswith('function 2'):
                 print('WARNING: multiple functions in the base file; incorrect behavior possible')
@@ -359,6 +372,6 @@ if __name__ == '__main__':
 
     for template_file in template_files:
         list_of_param_objs = Parameters.parse_params_template_csv(template_file, param_descripts_file)
-        main_method_prep(list_of_param_objs, list_of_param_objs[0].combine_all_bool)
+        main_method_prep(list_of_param_objs)
         # param_dict = Parameters.parse_params_file_oldtxt(param_file, param_descripts_file)
         # param_container = Parameters.MethodParams(param_dict)
