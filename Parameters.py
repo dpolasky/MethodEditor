@@ -129,8 +129,13 @@ def parse_value(value):
         # try parsing numbers
         try:
             try:
+                if '_' in value:
+                    # don't treat the date as an integer (pass it down to string)
+                    raise ValueError
                 output_val = int(value)
             except ValueError:
+                if '_' in value:
+                    raise ValueError
                 float(value)    # test first with float because Decimal throws a weird error
                 output_val = Decimal(value) # represent floats with Decimal, since exact values can be important for MassLynx
         except ValueError:

@@ -7,6 +7,7 @@ import Parameters
 from dataclasses import dataclass
 import tkinter
 from tkinter import filedialog
+from tkinter import simpledialog
 import os
 
 
@@ -364,14 +365,56 @@ def make_funcs(param_obj_list):
     return funcs
 
 
+def check_params_and_filepaths(param_obj_list):
+    """
+    Check that the user has input appropriate values for the parameters and filepaths
+    to avoid crashing MassLynx
+    :param param_obj_list: list of param containers
+    :type param_obj_list: list[Parameters.MethodParams]
+    :return: (bool) True for no problems, False if problems found
+    """
+    forbidden_chars = ['.', '  ', ':', '\\', '/', '?', '@', '~', '(', ')', ',', ';']
+
+    for param_obj in param_obj_list:
+        # check for forbidden characters in fields that will end up in filenames
+        for char in forbidden_chars:
+            if char in param_obj.date:
+                simpledialog.messagebox.showerror('Forbidden Character', 'The character "{}" is not allowed in the DATE field to avoid crashing MassLynx. Canceling run.'.format(char))
+                return False
+            if char in param_obj.sample_name:
+                simpledialog.messagebox.showerror('Forbidden Character', 'The character "{}" is not allowed in the SAMPLE NAME field to avoid crashing MassLynx. Canceling run.'.format(char))
+                return False
+
+        # make sure cal/tune/base files point at actual files
+        if not os.path.exists(param_obj.base_file_path):
+            simpledialog.messagebox.showerror('Invalid File Path','The provided basefile path: {} does not point to a valid file! Canceling run.'.format(param_obj.base_file_path))
+            return False
+        if not os.path.exists(param_obj.cal_file):
+            simpledialog.messagebox.showerror('Invalid File Path','The provided calibration file path: {} does not point to a valid file! Canceling run.'.format(param_obj.cal_file))
+            return False
+        if not os.path.exists(param_obj.tune_file):
+            simpledialog.messagebox.showerror('Invalid File Path','The provided basefile path: {} does not point to a valid file! Canceling run.'.format(param_obj.tune_file))
+            return False
+
+    return True
+
+
+def main(list_of_template_files):
+    """
+    Run Method editor for each provided template file
+    :param list_of_template_files: list of paths to template csv files
+    :return: void
+    """
+    for template_file in list_of_template_files:
+        list_of_param_objs = Parameters.parse_params_template_csv(template_file, param_descripts_file)
+        if check_params_and_filepaths(list_of_param_objs):
+            main_method_prep(list_of_param_objs)
+
+
 if __name__ == '__main__':
     root = tkinter.Tk()
     root.withdraw()
 
     template_files = filedialog.askopenfilenames(title='Choose Template File(s)', filetypes=[('CSV Files', '.csv')])
+    main(template_files)
 
-    for template_file in template_files:
-        list_of_param_objs = Parameters.parse_params_template_csv(template_file, param_descripts_file)
-        main_method_prep(list_of_param_objs)
-        # param_dict = Parameters.parse_params_file_oldtxt(param_file, param_descripts_file)
-        # param_container = Parameters.MethodParams(param_dict)
