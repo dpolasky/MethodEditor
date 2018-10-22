@@ -7,6 +7,10 @@ import numpy as np
 from decimal import Decimal
 
 
+ms_basefile = '_MS_G2_basefile.exp'
+msms_basefile = '_MSMS_G2_BASEFILE.exp'
+
+
 class MethodParams(object):
     """
     Container for all parameters associated with a method
@@ -35,9 +39,12 @@ class MethodParams(object):
         self.scan_time = None
         self.base_file_path = None
 
-        self.params_dict = {}
+        self.params_dict = params_dict
         self.set_params(params_dict)
-
+        if self.msms_bool:
+            self.base_file_path = msms_basefile
+        else:
+            self.base_file_path = ms_basefile
 
     def set_params(self, params_dict):
         """
@@ -54,7 +61,7 @@ class MethodParams(object):
                 # no such parameter
                 print('No parameter name for param: ' + name)
                 continue
-        self.update_dict()
+        # self.update_dict()
 
     def update_dict(self):
         """
@@ -74,7 +81,9 @@ def parse_params_template_csv(params_file, descripts_file):
     :param descripts_file: Descriptions file with parameter descriptions and key names
     :return: list of param containers, combine all bool
     """
-    col_locations, codenames, names, reqs, descripts = parse_param_descriptions(descripts_file)
+    # col_locations, codenames, names, reqs, descripts
+
+    col_locations, codenames, names, descriptions, reqs = parse_param_descriptions(descripts_file)
     param_obj_list = []
 
     # initialize header information for later retrieval
@@ -82,6 +91,7 @@ def parse_params_template_csv(params_file, descripts_file):
 
     # Read the template file
     done_with_headers = False
+    header_index = 0
     with open(params_file, 'r') as parfile:
         for line in list(parfile):
             # check if we've reached the individual section yet
@@ -95,10 +105,11 @@ def parse_params_template_csv(params_file, descripts_file):
             # read headers
             if not done_with_headers:
                 splits = line.rstrip('\n').split(',')
-                for index, split in enumerate(splits):
-                    if split is not '':
-                        key = col_locations[index + 20]     # +20 to distinguish header columns from lower columns
-                        base_param_dict[key] = parse_value(split.strip())
+                # for index, split in enumerate(splits):
+                if splits[1] is not '':
+                    key = col_locations[header_index + 20]     # +20 to distinguish header columns from lower columns
+                    base_param_dict[key] = parse_value(splits[1].strip())
+                    header_index += 1
             else:
                 # read individual parameter lines and make a container for each
                 current_param_dict = {}
@@ -113,7 +124,7 @@ def parse_params_template_csv(params_file, descripts_file):
                 # initialize a parameter container
                 param_obj_list.append(MethodParams(current_param_dict))
 
-    return param_obj_list
+    return param_obj_list, reqs, names
 
 
 def parse_value(value):

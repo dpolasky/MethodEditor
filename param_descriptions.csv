@@ -1,25 +1,25 @@
 #Param Key,Default value,Parameter NAME,Parameter type,Param lower,Param upper,Param list,Parameter Description,Param Codename,template column
-combine_all_bool,FALSE,,string,,,True;False,,combine_all_bool,20
-msms_bool,TRUE,,string,,,True;False,,msms_mode,0
-cal_file,<your_cal_file>,,anystring,,,,,calibrationfile,21
-optic_mode,sensitivity,,string,,,sensitivity;resolution;high_resolution,,g2opticmode,26
-tune_file,<your_ipr_file>,,anystring,,,,,mstunefile,12
-output_dir,C:/MethodEditor/Outputs,,anystring,,,,,outputdirectory,25
-save_to_masslynx,FALSE,,string,,,True;False,,saveToMassLynxDir,22
-masslynx_dir,C:/MassLynx/Dan.Pro/ACQUDB,,string,,,,,masslynxdir,23
-functions_per_file,1,,int,1,inf,,,functions_per_file ,13
-save_dt,FALSE,,string,,,True;False,,save_DT_function,14
-delay_time_init,0,,float,0,inf,,,init_delay_func_time ,11
-date,<date>,,anystring,,,,,date,2
-mz,4000,,float,10,inf,,,mz,1
-sample_name,<sample>,,anystring,,,,,protein,3
-cv_step,5,,float,0,inf,,,step,4
-cv_start,10,,float,4,200,,,startcollisionvoltage,5
-cv_end,200,,float,4,200,,,endcollisionvoltage,6
-ms_start,100,,float,1,inf,,,msstart,7
-ms_end,8000,,float,1,inf,,,msend,8
-collect_time,0.5,,float,0.005,inf,,,collectiontime(mins),9
-scan_time,1,,float,0.3,30,,,scantime(secs),10
+combine_all_bool,FALSE,Combine ALL into 1 raw file?,string,,,True;False,,combine_all_bool,20
+msms_bool,TRUE,Use MSMS?,string,,,True;False,,msms_mode,0
+cal_file,<your_cal_file>,TOF Cal File,anystring,,,,,calibrationfile,21
+optic_mode,sensitivity,Optic Mode,string,,,sensitivity;resolution;high_resolution,,g2opticmode,25
+tune_file,<your_ipr_file>,MS Tune File,anystring,,,,,mstunefile,12
+output_dir,C:/MethodEditor/Outputs,Non-MassLynx Directory,anystring,,,,,outputdirectory,24
+save_to_masslynx,FALSE,Save to MassLynx?,string,,,True;False,,saveToMassLynxDir,22
+masslynx_dir,C:/MassLynx/Dan.Pro/ACQUDB,MassLynx Directory,anystring,,,,,masslynxdir,23
+functions_per_file,1,Functions per Raw File,int,1,30,,,functions_per_file ,13
+save_dt,FALSE,Save DT Func,string,,,True;False,,save_DT_function,14
+delay_time_init,0,Delay Before Start (min),float,0,inf,,,init_delay_func_time ,11
+date,<date>,Date,anystring,,,,,date,2
+mz,4000,m/z to select (MSMS),float,10,inf,,,mz,1
+sample_name,<sample>,Sample Name,anystring,,,,,protein,3
+cv_step,5,CV Step,float,0,inf,,,step,4
+cv_start,10,Start CV,float,4,200,,,startcollisionvoltage,5
+cv_end,200,End CV,float,4,200,,,endcollisionvoltage,6
+ms_start,100,Mass range low,float,1,inf,,,msstart,7
+ms_end,8000,Mass range high,float,1,inf,,,msend,8
+collect_time,0.5,TOTAL Collection time per Func (min),float,0.005,inf,,,collectiontime(mins),9
+scan_time,1,SCAN Time (sec),float,0.099999,5,,,scantime(secs),10
 base_file_path,C:/MethodEditor/G2_base_file,,anystring,0,inf,,,basefile,24
 #delay_bool,FALSE,,string,,,True;False,,use_delay ,
 #delay_time_btwn,0,,float,0,inf,,,delay_between_funcs ,

@@ -49,7 +49,6 @@ def main_method_prep(param_obj_list):
 
     else:
         # standard mode - make an individual method file for each analysis (and split into multiple if requested)
-        method_func_lists = []
         sample_list_strings = []
         sample_index = 1
 
@@ -60,7 +59,6 @@ def main_method_prep(param_obj_list):
             if len(funcs) > param_obj.functions_per_file:
                 # split the functions list into multiple method files
                 multiple_methods = split_to_multiple_files(funcs, param_obj.functions_per_file)
-                method_func_lists.extend(multiple_methods)
 
                 # generate the actual method files
                 for func_list in multiple_methods:
@@ -71,7 +69,9 @@ def main_method_prep(param_obj_list):
 
             else:
                 # only one method/raw file for this parameter container - make it
-                method_func_lists.append(funcs)
+                if len(funcs) > 30:
+                    simpledialog.messagebox.showerror('Too Many Functions!', 'Too many functions ({}) requested for combined file. MassLynx crashes above ~30 files or so (no idea why) so this is not allowed. Skipping this analysis.'.format(len(funcs)))
+                    continue
                 filename = make_method_file(funcs, param_obj)
                 sample_list_part = make_sample_list_component(param_obj, filename, funcs, sample_index)
                 sample_list_strings.append(sample_list_part)
@@ -365,7 +365,7 @@ def make_funcs(param_obj_list):
     return funcs
 
 
-def check_params_and_filepaths(param_obj_list):
+def check_params_and_filepaths(param_obj_list, param_reqs, param_names):
     """
     Check that the user has input appropriate values for the parameters and filepaths
     to avoid crashing MassLynx
@@ -385,18 +385,87 @@ def check_params_and_filepaths(param_obj_list):
                 simpledialog.messagebox.showerror('Forbidden Character', 'The character "{}" is not allowed in the SAMPLE NAME field to avoid crashing MassLynx. Canceling run.'.format(char))
                 return False
 
+        # check that all parameters are within allowed bounds
+        if not check_all_param_vals(param_obj.params_dict, param_reqs, param_names):
+            return False
+
         # make sure cal/tune/base files point at actual files
         if not os.path.exists(param_obj.base_file_path):
-            simpledialog.messagebox.showerror('Invalid File Path','The provided basefile path: {} does not point to a valid file! Canceling run.'.format(param_obj.base_file_path))
+            simpledialog.messagebox.showerror('Invalid File Path','The provided base file path: {} does not point to a valid file! Canceling run.'.format(param_obj.base_file_path))
             return False
         if not os.path.exists(param_obj.cal_file):
             simpledialog.messagebox.showerror('Invalid File Path','The provided calibration file path: {} does not point to a valid file! Canceling run.'.format(param_obj.cal_file))
             return False
-        if not os.path.exists(param_obj.tune_file):
-            simpledialog.messagebox.showerror('Invalid File Path','The provided basefile path: {} does not point to a valid file! Canceling run.'.format(param_obj.tune_file))
-            return False
+        if param_obj.save_to_masslynx:
+            # check that the tune file exists in the provided AcquDB folder
+            tune_path = os.path.join(param_obj.masslynx_dir, param_obj.tune_file)
+            if not os.path.exists(tune_path):
+                simpledialog.messagebox.showerror('Invalid File Path','The provided tune file path: {} does not point to a valid file! Canceling run.'.format(tune_path))
+                return False
 
     return True
+
+
+def check_all_param_vals(param_dict, par_reqs, par_names):
+    """
+    Check for any parameters in the input dictionary (from a single Parameters object) that
+    are out of bounds. Returns True if all values are acceptable
+    :param param_dict: dictionary of parameter key: value
+    :param par_reqs: dict of parameter key, list of required values
+    :param par_names: dict of parameter key, parameter name
+    :return: (bool) True if no out-of-bounds
+    """
+    fail_params = []
+    for param_key, value in param_dict.items():
+        if not check_param_value(param_key, value, par_reqs):
+            fail_params.append(param_key)
+
+    if not len(fail_params) == 0:
+        # some parameters failed. Tell the user which ones
+        param_string = 'The parameter(s) below have inappropriate values. This analysis will be skipped. Press OK to continue\n'
+        for param in fail_params:
+            if par_reqs[param][0] == 'string' or par_reqs[param][0] == 'bool':
+                # print acceptable values list for string/bool
+                vals_string = ', '.join(par_reqs[param][1])
+                param_string += '{}: value must be one of ({})\n'.format(par_names[param], vals_string)
+            else:
+                # print type and bounds for float/int
+                lower_bound = par_reqs[param][1][0]
+                upper_bound = par_reqs[param][1][1]
+                param_string += '{}:\n\t Value Type must be: {}\n\t Value must be within bounds: {} - {}\n'.format(par_names[param],
+                                                                                                                   par_reqs[param][0],
+                                                                                                                   lower_bound,
+                                                                                                                   upper_bound)
+        simpledialog.messagebox.showwarning(title='Parameter Error', message=param_string)
+        return False
+    # no failures
+    return True
+
+
+def check_param_value(param_key, entered_val, par_reqs):
+    """
+    Check an individual parameter against its requirements
+    :param param_key: key to parameter dictionary to be checked
+    :param entered_val: value to check
+    :param par_reqs: dict of parameter key, list of required values
+    :return: True if the current value of the corresponding entry is valid, False if not
+    """
+    param_type = par_reqs[param_key][0]
+    param_val_list = par_reqs[param_key][1]
+    if param_type == 'int':
+        # If the param is an int, the value must be within the values specified in the requirement tuple
+        return param_val_list[0] <= entered_val <= param_val_list[1]
+
+    elif param_type == 'float':
+        return param_val_list[0] <= entered_val <= param_val_list[1]
+
+    elif param_type == 'string' or param_type == 'bool':
+        check_val_list = [x.strip().lower() for x in param_val_list]    # check against lower case/stripped
+        return str(entered_val).lower() in check_val_list
+
+    elif param_type == 'anystring':
+        # Things like titles can be any string - no checking required
+        return True
 
 
 def main(list_of_template_files):
@@ -406,8 +475,8 @@ def main(list_of_template_files):
     :return: void
     """
     for template_file in list_of_template_files:
-        list_of_param_objs = Parameters.parse_params_template_csv(template_file, param_descripts_file)
-        if check_params_and_filepaths(list_of_param_objs):
+        list_of_param_objs, param_reqs, param_names = Parameters.parse_params_template_csv(template_file, param_descripts_file)
+        if check_params_and_filepaths(list_of_param_objs, param_reqs, param_names):
             main_method_prep(list_of_param_objs)
 
 
