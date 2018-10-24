@@ -7,7 +7,7 @@ tune_file,<your_ipr_file>,MS Tune File,anystring,,,,,mstunefile,12
 output_dir,C:/MethodEditor/Outputs,Non-MassLynx Directory,anystring,,,,,outputdirectory,24
 save_to_masslynx,FALSE,Save to MassLynx?,string,,,True;False,,saveToMassLynxDir,22
 masslynx_dir,C:/MassLynx/Dan.Pro/ACQUDB,MassLynx Directory,anystring,,,,,masslynxdir,23
-functions_per_file,1,Functions per Raw File,int,1,30,,,functions_per_file ,13
+functions_per_file,1,Functions per Raw File,int,1,29,,,functions_per_file ,13
 save_dt,FALSE,Save DT Func,string,,,True;False,,save_DT_function,14
 delay_time_init,0,Delay Before Start (min),float,0,inf,,,init_delay_func_time ,11
 date,<date>,Date,anystring,,,,,date,2

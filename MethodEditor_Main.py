@@ -69,8 +69,8 @@ def main_method_prep(param_obj_list):
 
             else:
                 # only one method/raw file for this parameter container - make it
-                if len(funcs) > 30:
-                    simpledialog.messagebox.showerror('Too Many Functions!', 'Too many functions ({}) requested for combined file. MassLynx crashes above ~30 files or so (no idea why) so this is not allowed. Skipping this analysis.'.format(len(funcs)))
+                if len(funcs) >= 30:
+                    simpledialog.messagebox.showerror('Too Many Functions!', 'Too many functions ({}) requested for combined file. MassLynx crashes hard above 30 files (due to hardware limitations in the electronics) so this is not allowed. Skipping this analysis.'.format(len(funcs)))
                     continue
                 filename = make_method_file(funcs, param_obj)
                 sample_list_part = make_sample_list_component(param_obj, filename, funcs, sample_index)
@@ -371,6 +371,8 @@ def check_params_and_filepaths(param_obj_list, param_reqs, param_names):
     to avoid crashing MassLynx
     :param param_obj_list: list of param containers
     :type param_obj_list: list[Parameters.MethodParams]
+    :param param_names: dict of param key: display name for each parameter
+    :param param_reqs: dict of param key: required value list for each parameter. Required values are [low, high] for numerical values or list of acceptable strings for strings
     :return: (bool) True for no problems, False if problems found
     """
     forbidden_chars = ['.', '  ', ':', '\\', '/', '?', '@', '~', '(', ')', ',', ';']
@@ -468,22 +470,27 @@ def check_param_value(param_key, entered_val, par_reqs):
         return True
 
 
-def main(list_of_template_files):
+def main(template_file):
     """
-    Run Method editor for each provided template file
-    :param list_of_template_files: list of paths to template csv files
+    Run Method editor for the provided template file
+    :param template_file: path to template csv file to process
     :return: void
     """
-    for template_file in list_of_template_files:
-        list_of_param_objs, param_reqs, param_names = Parameters.parse_params_template_csv(template_file, param_descripts_file)
-        if check_params_and_filepaths(list_of_param_objs, param_reqs, param_names):
-            main_method_prep(list_of_param_objs)
+    # for template_file in list_of_template_files:
+    list_of_param_objs, param_reqs, param_names = Parameters.parse_params_template_csv(template_file, param_descripts_file)
+    if check_params_and_filepaths(list_of_param_objs, param_reqs, param_names):
+        main_method_prep(list_of_param_objs)
+
+        if list_of_param_objs[0].save_to_masslynx:
+            simpledialog.messagebox.showinfo('Success!', 'Method files were generated successfully! To run the generated method(s), import the "csv-to-import.csv" file into MassLynx (File/Import Worksheet) to load the created sample list.\n\nMethod files saved to {}'.format(list_of_param_objs[0].masslynx_dir))
+        else:
+            simpledialog.messagebox.showinfo('Success!', 'Method files generated successfully. To run the generated method(s), import the "csv-to-import.csv" file into MassLynx (File/Import Worksheet) to load the created sample list. \n\nNOTE: "Save to MassLynx?" was set to False, so generated files MUST be moved to the MassLynx\<your project>.Pro\ACQUDB folder before running the sample list in MassLynx!\n\nOutput method files were saved to {}'.format(list_of_param_objs[0].output_dir))
 
 
 if __name__ == '__main__':
     root = tkinter.Tk()
     root.withdraw()
 
-    template_files = filedialog.askopenfilenames(title='Choose Template File(s)', filetypes=[('CSV Files', '.csv')])
-    main(template_files)
+    templatefile = filedialog.askopenfilename(title='Choose Template File(s)', filetypes=[('CSV Files', '.csv')])
+    main(templatefile)
 
