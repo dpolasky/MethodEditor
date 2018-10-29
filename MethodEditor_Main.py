@@ -44,6 +44,9 @@ def main_method_prep(param_obj_list):
     if param_obj_list[0].combine_all_bool:
         # Combined mode: combine ALL analyses into a single method/raw file
         funcs = make_funcs(param_obj_list)
+        if len(funcs) >= 30:
+            simpledialog.messagebox.showerror('Too Many Functions!', 'Too many functions ({}) requested for combined file. MassLynx crashes above 30 files (due to hardware limitations in the electronics) so this is not allowed. Skipping this analysis.'.format(len(funcs)))
+            return False
         filename = make_method_file(funcs, param_obj_list[0])
         sample_list_strings = [make_sample_list_component(param_obj_list[0], filename, funcs, current_index=1)]
 
@@ -68,10 +71,12 @@ def main_method_prep(param_obj_list):
                     sample_index += 1
 
             else:
-                # only one method/raw file for this parameter container - make it
+                # check here, but shouldn't ever be reached because of the parameter check (not allowed to request >30 funcs)
                 if len(funcs) >= 30:
                     simpledialog.messagebox.showerror('Too Many Functions!', 'Too many functions ({}) requested for combined file. MassLynx crashes hard above 30 files (due to hardware limitations in the electronics) so this is not allowed. Skipping this analysis.'.format(len(funcs)))
                     continue
+
+                # only one method/raw file for this parameter container - make it
                 filename = make_method_file(funcs, param_obj)
                 sample_list_part = make_sample_list_component(param_obj, filename, funcs, sample_index)
                 sample_list_strings.append(sample_list_part)
@@ -79,6 +84,7 @@ def main_method_prep(param_obj_list):
 
     # Generate sample list for all analyses
     make_final_sample_list(sample_list_strings, param_obj_list[0])
+    return True
 
 
 def make_sample_list_component(param_obj, exp_filename, func_list, current_index):
@@ -375,7 +381,7 @@ def check_params_and_filepaths(param_obj_list, param_reqs, param_names):
     :param param_reqs: dict of param key: required value list for each parameter. Required values are [low, high] for numerical values or list of acceptable strings for strings
     :return: (bool) True for no problems, False if problems found
     """
-    forbidden_chars = ['.', '  ', ':', '\\', '/', '?', '@', '~', '(', ')', ',', ';']
+    forbidden_chars = ['.', '  ', ':', '\\', '/', '?', '@', '~', '(', ')', ',', ';', '<', '>']
 
     for param_obj in param_obj_list:
         # check for forbidden characters in fields that will end up in filenames
@@ -479,12 +485,13 @@ def main(template_file):
     # for template_file in list_of_template_files:
     list_of_param_objs, param_reqs, param_names = Parameters.parse_params_template_csv(template_file, param_descripts_file)
     if check_params_and_filepaths(list_of_param_objs, param_reqs, param_names):
-        main_method_prep(list_of_param_objs)
+        success_flag = main_method_prep(list_of_param_objs)
 
-        if list_of_param_objs[0].save_to_masslynx:
-            simpledialog.messagebox.showinfo('Success!', 'Method files were generated successfully! To run the generated method(s), import the "csv-to-import.csv" file into MassLynx (File/Import Worksheet) to load the created sample list.\n\nMethod files saved to {}'.format(list_of_param_objs[0].masslynx_dir))
-        else:
-            simpledialog.messagebox.showinfo('Success!', 'Method files generated successfully. To run the generated method(s), import the "csv-to-import.csv" file into MassLynx (File/Import Worksheet) to load the created sample list. \n\nNOTE: "Save to MassLynx?" was set to False, so generated files MUST be moved to the MassLynx\<your project>.Pro\ACQUDB folder before running the sample list in MassLynx!\n\nOutput method files were saved to {}'.format(list_of_param_objs[0].output_dir))
+        if success_flag:
+            if list_of_param_objs[0].save_to_masslynx:
+                simpledialog.messagebox.showinfo('Success!', 'Method files were generated successfully! To run the generated method(s), import the "csv-to-import.csv" file into MassLynx (File/Import Worksheet) to load the created sample list.\n\nMethod files saved to {}'.format(list_of_param_objs[0].masslynx_dir))
+            else:
+                simpledialog.messagebox.showinfo('Success!', 'Method files generated successfully. To run the generated method(s), import the "csv-to-import.csv" file into MassLynx (File/Import Worksheet) to load the created sample list. \n\nNOTE: "Save to MassLynx?" was set to False, so generated files MUST be moved to the MassLynx\<your project>.Pro\ACQUDB folder before running the sample list in MassLynx!\n\nOutput method files were saved to {}'.format(list_of_param_objs[0].output_dir))
 
 
 if __name__ == '__main__':
