@@ -160,6 +160,21 @@ def split_to_multiple_files(func_list, num_funcs_per_file):
             current_output_list.append(func)
             func_counter += 1
     output_lists.append(current_output_list)
+
+    # Once all function lists have been generated, update function times so that first func in a list always starts at time 0
+    for output_list in output_lists:
+        current_func_time = 0
+        if output_list[0].start_time > 0:
+            # This function list does not start at time 0 - correct the times for each function
+            for func in output_list:
+                # Calculate the length of this function from its old times and use that to compute new times
+                func_length = func.stop_time - func.start_time
+                new_end_time = current_func_time + func_length
+                func.start_time = current_func_time
+                func.stop_time = new_end_time
+
+                current_func_time = new_end_time
+
     return output_lists
 
 
