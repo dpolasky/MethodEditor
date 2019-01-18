@@ -100,12 +100,20 @@ def make_sample_list_component(param_obj, exp_filename, func_list, current_index
     :return: string
     """
     output_string = ''
-    cv_range = '{}-{}V'.format(func_list[0].cv, func_list[-1].cv)
+    if func_list[0].cv == func_list[-1].cv:
+        cv_range = '{}V'.format(func_list[0].cv)
+    else:
+        cv_range = '{}-{}V'.format(func_list[0].cv, func_list[-1].cv)
     if param_obj.combine_all_bool:
         file_text = 'combined'
     else:
         file_text = cv_range
-    filename = '{}_{}_{}_{}'.format(param_obj.date, param_obj.sample_name, func_list[0].select_mz, cv_range)
+
+    if param_obj.msms_bool:
+        filename = '{}_{}_{}_{}'.format(param_obj.date, param_obj.sample_name, func_list[0].select_mz, cv_range)
+    else:
+        filename = '{}_{}_{}'.format(param_obj.date, param_obj.sample_name, cv_range)
+
 
     line = '{},{},{},{},{}\n'.format(current_index, filename, file_text, exp_filename, param_obj.tune_file)
 
@@ -151,15 +159,15 @@ def split_to_multiple_files(func_list, num_funcs_per_file):
     current_output_list = []
 
     for func in func_list:
+        current_output_list.append(func)
+        func_counter += 1
         if func_counter > num_funcs_per_file:
-            # Too many functions - start a new list
             output_lists.append([x for x in current_output_list])
-            current_output_list = [func]
+            current_output_list = []
             func_counter = 1
-        else:
-            current_output_list.append(func)
-            func_counter += 1
-    output_lists.append(current_output_list)
+
+    if len(current_output_list) > 0:
+        output_lists.append(current_output_list)
 
     # Once all function lists have been generated, update function times so that first func in a list always starts at time 0
     for output_list in output_lists:
