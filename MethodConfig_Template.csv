@@ -1,0 +1,14 @@
+# INITIAL PARAMETERS (for all fingerprints) #######################,,,,,,,,,,,,,,
+Instrument Type,G2,,,,,,,,,,,,,
+Combine ALL into 1 raw file?,FALSE,,,,,,,,,,,,,
+TOF Cal File, C:\MassLynx\IntelliStart\Results\Dan_Pos_Sen_100-10000-31.cal,,,,,,,,,,,,,
+Save to MassLynx?,TRUE,,,,,,,,,,,,,
+Masslynx Directory, C://MassLynx//Dan.PRO//ACQUDB,,,,,,,,,,,,,
+Non-MassLynx Directory, C://MethodEditor//Outputs,,,,,,,,,,,,,
+Optic Mode, sensitivity,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+# INDIVIDUAL FINGERPRINT PARAMETERS ##############,,,,,,,,,,,,,,
+# Use MSMS?,m/z to select (MSMS),Date,Sample Name,CV Step,Start CV,End CV,Mass range low,Mass range high,TOTAL Collection time per Func (min),SCAN Time (sec),Delay Before Start (min),MS Tune File,Functions per Raw File,Save DT Func
+ True,4000, 2018_10_22, test1,5,10,200,100,8000,0.25,0.1,0, __b-lac_lm4_2016_11_18.ipr,20, false
+ True,4200, 2018_10_22, test2,5,10,200,100,8000,0.25,0.1,0, __b-lac_lm4_2016_11_18.ipr,20, false
+ True,4400, 2018_10_22, test3,5,10,200,100,8000,0.25,0.1,0, __b-lac_lm4_2016_11_18.ipr,20, false
