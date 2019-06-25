@@ -6,9 +6,12 @@ Module for parameter container and associated methods
 import numpy as np
 from decimal import Decimal
 
-
-ms_basefile = '_MS_G2_basefile.exp'
-msms_basefile = '_MSMS_G2_BASEFILE.exp'
+g1_ms_basefile = '_MS_G1_basefile.exp'
+g1_msms_basefile = '_MSMS_G1_basefile.exp'
+g2_ms_basefile = '_MS_G2_basefile.exp'
+g2_msms_basefile = '_MSMS_G2_BASEFILE.exp'
+g2si_ms_basefile = '_MS_G2si_basefile.exp'
+g2si_msms_basefile = '_MSMS_G2si_basefile.exp'
 
 
 class MethodParams(object):
@@ -37,14 +40,29 @@ class MethodParams(object):
         self.ms_end = None
         self.collect_time = None
         self.scan_time = None
+        self.instrument_type = None
         self.base_file_path = None
 
         self.params_dict = params_dict
         self.set_params(params_dict)
-        if self.msms_bool:
-            self.base_file_path = msms_basefile
+
+        if self.instrument_type.lower() == 'g1':
+            if self.msms_bool:
+                self.base_file_path = g1_msms_basefile
+            else:
+                self.base_file_path = g1_ms_basefile
+        elif self.instrument_type.lower() == 'g2':
+            if self.msms_bool:
+                self.base_file_path = g2_msms_basefile
+            else:
+                self.base_file_path = g2_ms_basefile
+        elif self.instrument_type.lower() == 'g2si' or self.instrument_type.lower() == 'g2-si':
+            if self.msms_bool:
+                self.base_file_path = g2si_msms_basefile
+            else:
+                self.base_file_path = g2si_ms_basefile
         else:
-            self.base_file_path = ms_basefile
+            print('ERROR: UNSUPPORTED INSTRUMENT TYPE: {}. The template will not be processed.'.format(self.instrument_type))
 
     def set_params(self, params_dict):
         """
@@ -82,7 +100,6 @@ def parse_params_template_csv(params_file, descripts_file):
     :return: list of param containers, combine all bool
     """
     # col_locations, codenames, names, reqs, descripts
-
     col_locations, codenames, names, descriptions, reqs = parse_param_descriptions(descripts_file)
     param_obj_list = []
 

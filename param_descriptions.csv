@@ -1,12 +1,13 @@
 #Param Key,Default value,Parameter NAME,Parameter type,Param lower,Param upper,Param list,Parameter Description,Param Codename,template column
-combine_all_bool,FALSE,Combine ALL into 1 raw file?,string,,,True;False,,combine_all_bool,20
+instrument_type,G2,Instrument Type,string,,,G2;G2si;G2-si;G1;G1neg,,instrument_type,20
+combine_all_bool,FALSE,Combine ALL into 1 raw file?,string,,,True;False,,combine_all_bool,21
 msms_bool,TRUE,Use MSMS?,string,,,True;False,,msms_mode,0
-cal_file,<your_cal_file>,TOF Cal File,anystring,,,,,calibrationfile,21
-optic_mode,sensitivity,Optic Mode,string,,,sensitivity;resolution;high_resolution,,g2opticmode,25
+cal_file,<your_cal_file>,TOF Cal File,anystring,,,,,calibrationfile,22
+optic_mode,sensitivity,Optic Mode,string,,,sensitivity;resolution;high_resolution,,g2opticmode,26
 tune_file,<your_ipr_file>,MS Tune File,anystring,,,,,mstunefile,12
-output_dir,C:/MethodEditor/Outputs,Non-MassLynx Directory,anystring,,,,,outputdirectory,24
-save_to_masslynx,FALSE,Save to MassLynx?,string,,,True;False,,saveToMassLynxDir,22
-masslynx_dir,C:/MassLynx/Dan.Pro/ACQUDB,MassLynx Directory,anystring,,,,,masslynxdir,23
+output_dir,C:/MethodEditor/Outputs,Non-MassLynx Directory,anystring,,,,,outputdirectory,25
+save_to_masslynx,FALSE,Save to MassLynx?,string,,,True;False,,saveToMassLynxDir,23
+masslynx_dir,C:/MassLynx/Dan.Pro/ACQUDB,MassLynx Directory,anystring,,,,,masslynxdir,24
 functions_per_file,1,Functions per Raw File,int,1,29,,,functions_per_file ,13
 save_dt,FALSE,Save DT Func,string,,,True;False,,save_DT_function,14
 delay_time_init,0,Delay Before Start (min),float,0,inf,,,init_delay_func_time ,11
@@ -20,6 +21,6 @@ ms_start,100,Mass range low,float,1,inf,,,msstart,7
 ms_end,8000,Mass range high,float,1,inf,,,msend,8
 collect_time,0.5,TOTAL Collection time per Func (min),float,0.005,inf,,,collectiontime(mins),9
 scan_time,1,SCAN Time (sec),float,0.099999,5,,,scantime(secs),10
-base_file_path,C:/MethodEditor/G2_base_file,,anystring,0,inf,,,basefile,24
+base_file_path,C:/MethodEditor/G2_base_file,,anystring,0,inf,,,basefile,27
 #delay_bool,FALSE,,string,,,True;False,,use_delay ,
 #delay_time_btwn,0,,float,0,inf,,,delay_between_funcs ,

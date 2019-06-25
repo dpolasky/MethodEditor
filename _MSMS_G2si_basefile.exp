@@ -1,0 +1,189 @@
+GENERAL INFORMATION
+ExperimentName,F:\Mass Spec Data\May_2019.PRO\ACQUDB\IM-MSMS_example.exp
+ExperimentCreationTime,Thu 13 Jun 2019 13:38:09
+VersionNumber,1.0
+ExperimentDuration,1
+AnalogChannelDescription1,Channel 1,Disabled
+AnalogChannelDescription2,Channel 2,Disabled
+AnalogChannelDescription3,Channel 3,Disabled
+AnalogChannelDescription4,Channel 4,Disabled
+AnalogChannelDescription5,Channel 5,Disabled
+AnalogChannelDescription6,Channel 6,Disabled
+AnalogChannelDescription7,Channel 7,Disabled
+AnalogChannelDescription8,Channel 8,Disabled
+MUXAnalogOffset1,0
+MUXAnalogOffset2,0
+MUXAnalogOffset3,0
+MUXAnalogOffset4,0
+MUXAnalogOffset5,0
+MUXAnalogOffset6,0
+MUXAnalogOffset7,0
+MUXAnalogOffset8,0
+ExperimentCalibrationFilename,C:\MassLynx\Default.pro\Acqudb\Uncal.cal,Enabled
+ExperimentNegCalibrationFilename,,Disabled
+SolventDelayStart1,0
+SolventDelayEnd1,0
+SolventDelayTemp1,0
+SolventDelayStart2,0
+SolventDelayEnd2,0
+SolventDelayTemp2,0
+SolventDelayStart3,0
+SolventDelayEnd3,0
+SolventDelayTemp3,0
+SolventDelayStart4,0
+SolventDelayEnd4,0
+SolventDelayTemp4,0
+SolventDelayDivertValveEnabled,0
+ReferenceFrequency,10
+ReferenceConeVoltage,40
+ReferenceScanTime,1
+ReferenceCentroidAverage,3
+ReferenceSetMass,50
+ReferenceCollisionEnergy,10
+PositivePolarity,1
+DREGain,100
+OpticMode,2
+ReferenceTofMode,1
+UseMOpticMode,0
+OpticModeCount,0
+MultiOpticMode,0
+UseContinuumDRE,0
+LowDRERation,50
+HighDRERation,50
+DREReplaceWnd,0
+AutoDetectorCheck,0
+ProbeTemperatureRamping,0
+ProbeTemperatureStart,20
+ProbeTemperatureEnd,650
+ProbeTemperatureIncrement,20
+DREExtended,0
+ExperimentExtension,TIMED_EVENTS_EXTENSION
+ExperimentExtensionData,0,4,-60.000000,Flow State,LC,Sample,-60.000000,Reservoir,B,LockSpray,-60.000000,Refill,Auto-Refill,LockSpray,-60.000000,Infusion,Start,LockSpray
+NumberOfFunctions,1
+FunctionTypes,Tof MSMS
+
+FUNCTION 1
+FunctionType,Tof MSMS
+FunctionDataFormat,Continuum
+FunctionIonMode,ES Mode
+FunctionPolarity,Positive
+FunctionInstrumentConditions,c:\masslynx\default.pro\acqudb\default.ipr
+FunctionStartMass,100
+FunctionEndMass,8000
+FunctionStartTime(min),0
+FunctionEndTime(min),1
+FunctionScanTime(sec),1
+FunctionInterScanTime(sec),0.014
+Scans To Sum,1
+Resolution,1000
+PrimaryScanLock,2
+SecondaryScanLock,2
+ThresholdLock,100
+StepLock,0.02
+FunctionOnOffState,1
+PeakDisplayTuneMode,0
+FastDDA,0
+SIRMode,Peak Top
+NumSIRMasses,0
+UseMOpticMode,0
+OpticModeCount,1
+MultiOpticMode,2
+FastLockOn,1
+UseOpticMode,2
+FragmentationMode,0
+RuleFile,
+UseRuleFileFiltering,0
+MaintainIMS,1
+OverrideIMSWaveWidth,0
+OverrideTransferWaveWidth,0
+IMSWaveWidthVal,1200
+TransferWaveWidthVal,1200
+SaveRawEIData,0
+TOFConeVoltage,40
+UseTunePageConeVoltage,1
+TOFProbeTemperature,550
+UseTunePageProbeTemperature,1
+TOFSetMass,4400
+TOFCollisionEnergy,20
+TOFUseTunePageCollisionEnergy,0
+UseSampleListSetMass,0
+SampleListSetMass,MASS_A
+UseCVRamp,0
+CVRampInitialVoltage,40
+CVRampFinalVoltage,40
+UseFixedCE,1
+UseCEProfile,0
+CEProfile01,30
+CEProfile02,30
+CEProfile03,30
+CEProfile04,30
+CEProfile05,30
+CEUsage,1
+UseTrapCERamp,0
+UseTransferCERamp,0
+TrapCERampInitialEnergy,30
+TrapCERampFinalEnergy,30
+TransferCERampInitialEnergy,30
+TransferCERampFinalEnergy,30
+FixedCollisionEnergy2,5
+UseTunePageCE2,0
+UseTunePageMSMSCE2,1077805056
+UseFixedCE2,1
+UseCE2Profile,0
+CE2Profile01,30
+CE2Profile02,30
+CE2Profile03,30
+CE2Profile04,30
+CE2Profile05,30
+CE2Usage,1
+UseCE2LUT,0
+UseCE2LUTOffset,0
+EDCEnabled,0
+EDCMode,0
+EDCUsage,0
+EDCMass1,200
+EDCMass2,-1
+EDCMass3,-1
+EDCMass4,-1
+EDCMass5,-1
+Repeats,1
+SetMassSpan,0
+ScansSum,1
+AcquireInMMode,1
+MaldiLaserType,1
+MaldiFiringRate,1
+MaldiLaserEnergy,1
+MaldiPlateSpeed,1
+MaldiPatternFilename,c:\Masslynx\Spiral_96.ptn
+MaldiAcquisitionType,0
+UseVariableFlow,0
+VariableFlowPortNumber,1
+VariableFlowPulseWidth,0
+SwitchOnLockSpray,0
+CentroidLockMass,0
+CentroidAttLockMass,0
+CentroidMassWindow,0.5
+BaffleLock,0
+TemperatureCorrection,0
+TemperatureCoefficient,0
+UseWizCone,0
+CollisionEnergy2LUT,
+CollisionEnergy1LUT,
+HDCTransferLUT1,
+HDCTransferLUT2,
+HDCTransferLUT3,
+HDCTransferLUT4,
+HDCTransferLUT1Percent,100
+HDCTransferLUT2Percent,0
+HDCTransferLUT3Percent,0
+HDCTransferLUT4Percent,0
+UseAutomaticLocksprayConditions,0
+CompoundName,
+AttCompoundName,
+LocksprayDRESetting,99.9
+CentroidLockMassOption,0
+AcquireCollapsedRetentionTimeFunction,1
+AcquireIMSDatatoRaw,0
+MobilityTuningDREExtended,0
+CentroidLockMassList,
+CentroidAttLockMassList,
