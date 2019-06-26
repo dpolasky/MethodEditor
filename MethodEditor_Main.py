@@ -14,6 +14,9 @@ import os
 optics_dict = {'sensitivity': 2,
                'resolution': 0,
                'high_resolution': 1}
+g1_optics_dict = {'sensitivity': 0,
+                  'resolution': 0,
+                  'high_resolution': 1}
 param_descripts_file = 'param_descriptions.csv'
 
 
@@ -218,8 +221,12 @@ def make_method_file(function_list, param_obj):
             newline = 'ExperimentDuration,{}\n'.format(function_list[-1].stop_time)
         elif line.lower().startswith('experimentcalibrationfilename'):
             newline = 'ExperimentCalibrationFilename,{},Enabled\n'.format(param_obj.cal_file)
-        elif line.lower().startswith('opticmode'):
-            newline = 'OpticMode,{}\n'.format(optics_dict[param_obj.optic_mode])
+        elif line.lower().startswith('opticmode') or line.lower().startswith('wmode'):
+            # G1 has different optics modes than G2 or G2-Si
+            if param_obj.instrument_type.lower().startswith('g1'):
+                newline = 'WMode,{}\n'.format(g1_optics_dict[param_obj.optic_mode])
+            else:
+                newline = 'OpticMode,{}\n'.format(optics_dict[param_obj.optic_mode])
         elif line.lower().startswith('numberoffunctions'):
             newline = 'NumberOfFunctions,{}\n'.format(len(function_list))
         elif line.lower().startswith('functiontypes'):
@@ -333,7 +340,12 @@ def get_basefile_lines(param_obj):
 
             # check for end of function lines
             if param_obj.msms_bool:
-                if line.lower().startswith('scanssum'):
+                # G1 has different footer start than G2/G2-Si in MSMS mode
+                if param_obj.instrument_type.lower() == 'g1' or param_obj.instrument_type.lower() == 'g1neg':
+                    footer_text = 'edcmass5'
+                else:
+                    footer_text = 'scanssum'
+                if line.lower().startswith(footer_text):
                     footer = True
             else:
                 if line.lower().startswith('fastddamsmsscantime'):

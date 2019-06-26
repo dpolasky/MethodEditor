@@ -8,6 +8,8 @@ from decimal import Decimal
 
 g1_ms_basefile = '_MS_G1_basefile.exp'
 g1_msms_basefile = '_MSMS_G1_basefile.exp'
+g1neg_ms_basefile = '_MS_G1neg_basefile.exp'
+g1neg_msms_basefile = '_MSMS_G1neg_basefile.exp'
 g2_ms_basefile = '_MS_G2_basefile.exp'
 g2_msms_basefile = '_MSMS_G2_BASEFILE.exp'
 g2si_ms_basefile = '_MS_G2si_basefile.exp'
@@ -51,6 +53,11 @@ class MethodParams(object):
                 self.base_file_path = g1_msms_basefile
             else:
                 self.base_file_path = g1_ms_basefile
+        elif self.instrument_type.lower() == 'g1neg':
+            if self.msms_bool:
+                self.base_file_path = g1neg_msms_basefile
+            else:
+                self.base_file_path = g1neg_ms_basefile
         elif self.instrument_type.lower() == 'g2':
             if self.msms_bool:
                 self.base_file_path = g2_msms_basefile
